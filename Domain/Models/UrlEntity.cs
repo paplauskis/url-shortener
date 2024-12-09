@@ -15,11 +15,15 @@ public class UrlEntity : BaseEntity
     [MaxLength(50)]
     [Required]
     public string ShortenedUrl { get; init; }
+    
+    [Column("click_count")]
+    public int ClickCount { get; set; }
 
-    public UrlEntity(string originalUrl, string shortenedUrl)
+    public UrlEntity(string originalUrl, string shortenedUrl, int clickCount = 0)
     {
         OriginalUrl = originalUrl;
         ShortenedUrl = shortenedUrl;
+        ClickCount = clickCount;
     }
     
     public virtual List<UrlAccessLog> UrlAccessLogs { get; set; } = new List<UrlAccessLog>();
