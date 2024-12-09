@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using url_shortener.Data.Context;
 using url_shortener.Data.Models;
 using url_shortener.Domain;
-using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Interfaces.Repository;
 
 namespace url_shortener.Data.Repositories;
@@ -62,7 +61,7 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         
         if (existingEntity != null)
         {
-            _context.Remove(existingEntity);
+            _context.UrlEntities.Remove(existingEntity);
             await _context.SaveChangesAsync();
         }
     }
