@@ -19,6 +19,11 @@ public class UrlEntityRepository : IRepository<UrlEntity>
     {
         return await _context.UrlEntities.ToListAsync();
     }
+    
+    public async Task<int> CountEntitiesAsync()
+    {
+        return await _context.UrlEntities.CountAsync();
+    }
 
     public async Task<UrlEntity> GetByIdAsync(int id)
     {
@@ -64,5 +69,11 @@ public class UrlEntityRepository : IRepository<UrlEntity>
             _context.UrlEntities.Remove(existingEntity);
             await _context.SaveChangesAsync();
         }
+    }
+    
+    public bool CheckIfShortUrlExists(string url)
+    {
+        return _context.UrlEntities
+            .Any(e => e.ShortenedUrl == url);
     }
 }
