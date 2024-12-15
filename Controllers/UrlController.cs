@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using url_shortener.Domain;
 using url_shortener.Services;
 
 namespace url_shortener.Controllers;
@@ -17,14 +18,21 @@ public class UrlController : ControllerBase
     [HttpPost("/shorten/{url}")]
     public async Task<IActionResult> CreateNewUrl([FromRoute] string url)
     {
-        if (string.IsNullOrEmpty(url))
+        try
         {
-            return BadRequest("URL is required");
-        }
+            var newUrl = await _urlEntityService.CreateUrlEntity(url);
 
-        var newUrl = await _urlEntityService.CreateUrlEntity(url);
+            return Ok(newUrl);
+        }
+        catch (UrlAlreadyExistsException uae)
+        {
+            return Conflict(uae.Message);
+        }
+        catch (ArgumentNullException ane)
+        {
+            return BadRequest(ane.Message);
+        }
         
-        return Ok(newUrl);
     }
     
 }
