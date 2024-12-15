@@ -76,4 +76,10 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         return _context.UrlEntities
             .Any(e => e.ShortenedUrl == url);
     }
+    
+    public bool CheckIfLongUrlExists(string url)
+    {
+        return _context.UrlEntities
+            .Any(e => e.OriginalUrl == url);
+    }
 }
