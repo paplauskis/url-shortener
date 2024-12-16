@@ -17,7 +17,7 @@ public class UrlEntityRepository : IRepository<UrlEntity>
 
     public async Task<List<UrlEntity>> GetAllAsync()
     {
-        return await _context.UrlEntities.ToListAsync();
+        return await _context.UrlEntities.OrderByDescending(e => e.CreatedAt).ToListAsync();
     }
     
     public async Task<int> CountEntitiesAsync()
