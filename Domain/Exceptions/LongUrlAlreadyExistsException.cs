@@ -2,7 +2,7 @@ namespace url_shortener.Domain.Exceptions;
 
 public class UrlAlreadyExistsException : Exception
 {
-    public string Url { get; init; }
+    public string? Url { get; init; }
     
     public UrlAlreadyExistsException(string message) : base(message) {}
     

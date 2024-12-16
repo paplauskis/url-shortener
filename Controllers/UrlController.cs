@@ -48,13 +48,35 @@ public class UrlController : ControllerBase
             var newUrl = await _urlEntityService.CreateUrlEntityAsync(url);
             return Ok(newUrl);
         }
-        catch (UrlAlreadyExistsException uae)
+        catch (LongUrlAlreadyExistsException uae)
         {
             return Conflict(uae.Message);
         }
         catch (ArgumentNullException ane)
         {
             return BadRequest(ane.Message);
+        }
+    }
+    
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateUrl([FromRoute] string id, [FromBody] UrlEntityDto urlEntityDto)
+    {
+        try
+        {
+            var entity = await _urlEntityService.UpdateUrlEntityAsync(id, urlEntityDto);
+            return Ok(entity);
+        }
+        catch (EntityNotFoundException enfe)
+        {
+            return NotFound(enfe.Message);
+        }
+        catch (InvalidOperationException ioe)
+        {
+            return BadRequest(ioe.Message);
+        }
+        catch (ShortUrlAlreadyExistsException suae)
+        {
+            return Conflict(suae.Message);
         }
     }
 }
