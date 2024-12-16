@@ -61,4 +61,23 @@ public class UrlEntityService
         
         return await _repository.AddAsync(entity);
     }
+
+    public async Task<UrlEntity> UpdateUrlEntityAsync(string id)
+    {
+        if (!int.TryParse(id, out int intId))
+        {
+            throw new InvalidOperationException("Id must be a number.");
+        }
+        
+        var entity = await GetUrlEntityByIdAsync(intId);
+
+        if (entity == null)
+        {
+            throw new EntityNotFoundException("Url entity not found", intId);
+        }
+        
+        entity.UpdatedAt = DateTime.UtcNow;
+        
+        return await _repository.UpdateAsync(entity);
+    }
 }
