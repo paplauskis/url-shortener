@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace url_shortener.Data.Models;
+namespace url_shortener.Domain.Models;
 
 [Table("url_entity")]
 public class UrlEntity : BaseEntity
@@ -9,6 +9,7 @@ public class UrlEntity : BaseEntity
     [Column("original_url")]
     [Required]
     [MinLength(4)]
+    [MaxLength(2000)]
     public string OriginalUrl { get; init; }
     
     [Column("shortened_url")]

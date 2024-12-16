@@ -1,7 +1,7 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace url_shortener.Data.Models;
+namespace url_shortener.Domain.Models;
 
 public abstract class BaseEntity
 {
