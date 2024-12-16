@@ -59,7 +59,7 @@ public class UrlController : ControllerBase
     }
     
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateUrl([FromRoute] string id, [FromBody] UrlEntityDto urlEntityDto)
+    public async Task<IActionResult> UpdateUrlEntity([FromRoute] string id, [FromBody] UrlEntityDto urlEntityDto)
     {
         try
         {
@@ -78,5 +78,12 @@ public class UrlController : ControllerBase
         {
             return Conflict(suae.Message);
         }
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteUrlEntity([FromRoute] string id)
+    {
+       await _urlEntityService.DeleteUrlEntityAsync(id);
+       return Ok();
     }
 }
