@@ -18,6 +18,24 @@ public class UrlEntityService
     {
         return await _repository.GetAllAsync();
     }
+
+    public async Task<UrlEntity> GetUrlEntityByIdAsync(int id)
+    {
+        return await _repository.GetByIdAsync(id);
+    }
+
+    public async Task<UrlEntity> GetUrlEntityByShortUrlAsync(string shortUrl)
+    {
+        try
+        {
+            var entity = await _repository.GetByShortUrlAsync(shortUrl);
+            return entity;
+        }
+        catch (EntityNotFoundException enfe)
+        {
+            throw new EntityNotFoundException(enfe.Message);
+        }
+    }
     
     public async Task<UrlEntity> CreateUrlEntityAsync(string url)
     {
