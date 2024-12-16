@@ -1,4 +1,5 @@
 using url_shortener.Data.Repositories;
+using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Models;
 using url_shortener.Helpers;
@@ -46,7 +47,7 @@ public class UrlEntityService
         
         if (_repository.CheckIfLongUrlExists(url))
         {
-            throw new UrlAlreadyExistsException("Url already exists", url);
+            throw new LongUrlAlreadyExistsException("Url already exists", url);
         }
         
         int totalNumOfEntities = await _repository.CountEntitiesAsync();
@@ -62,7 +63,7 @@ public class UrlEntityService
         return await _repository.AddAsync(entity);
     }
 
-    public async Task<UrlEntity> UpdateUrlEntityAsync(string id)
+    public async Task<UrlEntity> UpdateUrlEntityAsync(string id, UrlEntityDto urlEntityDto)
     {
         if (!int.TryParse(id, out int intId))
         {
@@ -75,10 +76,15 @@ public class UrlEntityService
         {
             throw new EntityNotFoundException("Url entity not found", intId);
         }
+
+        if (urlEntityDto.ShortenedUrl != entity.ShortenedUrl && _repository.CheckIfShortUrlExists(urlEntityDto.ShortenedUrl))
+        {
+            throw new ShortUrlAlreadyExistsException("Url already exists", urlEntityDto.ShortenedUrl);
+        }
         
         entity.UpdatedAt = DateTime.UtcNow;
         
-        return await _repository.UpdateAsync(entity);
+        return await _repository.UpdateAsync(entity, urlEntityDto);
     }
 
     public async Task IncrementClickCount(UrlEntity urlEntity)
