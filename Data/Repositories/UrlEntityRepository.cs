@@ -36,6 +36,18 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         
         throw new EntityNotFoundException("Entity could not be found", id);
     }
+    
+    public async Task<UrlEntity> GetByShortUrlAsync(string url)
+    {
+        var entity = await _context.UrlEntities.FirstOrDefaultAsync(e => e.ShortenedUrl == url);
+
+        if (entity != null)
+        {
+            return entity;
+        }
+        
+        throw new EntityNotFoundException("Entity could not be found");
+    }
 
     public async Task<UrlEntity> AddAsync(UrlEntity entity)
     {
