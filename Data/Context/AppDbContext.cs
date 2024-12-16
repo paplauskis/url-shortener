@@ -1,5 +1,5 @@
 using Microsoft.EntityFrameworkCore;
-using url_shortener.Data.Models;
+using url_shortener.Domain.Models;
 
 namespace url_shortener.Data.Context;
 
