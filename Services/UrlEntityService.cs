@@ -13,8 +13,13 @@ public class UrlEntityService
     {
         _repository = repository;
     }
+
+    public async Task<List<UrlEntity>> GetAllUrlEntitiesAsync()
+    {
+        return await _repository.GetAllAsync();
+    }
     
-    public async Task<UrlEntity> CreateUrlEntity(string url)
+    public async Task<UrlEntity> CreateUrlEntityAsync(string url)
     {
         if (string.IsNullOrEmpty(url))
         {
