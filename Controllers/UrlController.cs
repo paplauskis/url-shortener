@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Models;
 using url_shortener.Services;
@@ -6,7 +7,7 @@ using url_shortener.Services;
 namespace url_shortener.Controllers;
 
 [ApiController]
-[Route("/api")]
+[Route("/api/")]
 public class UrlController : ControllerBase
 {
     private readonly UrlEntityService _urlEntityService;
@@ -22,8 +23,24 @@ public class UrlController : ControllerBase
         var entities = await _urlEntityService.GetAllUrlEntitiesAsync();
         return Ok(entities);
     }
+
+    [HttpGet("{shortUrl}")]
+    public async Task<ActionResult<UrlEntity>> RedirectUrl(string shortUrl)
+    {
+        try
+        {
+            var entity = await _urlEntityService.GetUrlEntityByShortUrlAsync(shortUrl);
+            await _urlEntityService.IncrementClickCount(entity);
+            
+            return Redirect("https://" + entity.OriginalUrl);
+        }
+        catch (EntityNotFoundException enfe)
+        {
+            return NotFound(enfe.Message);
+        }
+    }
     
-    [HttpPost("/shorten/{url}")]
+    [HttpPost("shorten/{url}")]
     public async Task<IActionResult> CreateNewUrl([FromRoute] string url)
     {
         try
