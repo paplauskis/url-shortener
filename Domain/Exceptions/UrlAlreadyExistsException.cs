@@ -1,4 +1,4 @@
-namespace url_shortener.Domain;
+namespace url_shortener.Domain.Exceptions;
 
 public class UrlAlreadyExistsException : Exception
 {
