@@ -9,6 +9,7 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<UrlEntityRepository>();
 builder.Services.AddScoped<UrlAccessLogRepository>();
 builder.Services.AddScoped<UrlEntityService>();
+builder.Services.AddScoped<UrlAccessLogService>();
 builder.Services.AddControllers();
 
 builder.Services.AddDbContext<AppDbContext>(options =>
