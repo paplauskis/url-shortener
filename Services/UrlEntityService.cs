@@ -80,4 +80,10 @@ public class UrlEntityService
         
         return await _repository.UpdateAsync(entity);
     }
+
+    public async Task IncrementClickCount(UrlEntity urlEntity)
+    {
+        urlEntity.ClickCount++;
+        await _repository.UpdateAsync(urlEntity);
+    }
 }
