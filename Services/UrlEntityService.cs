@@ -1,8 +1,6 @@
-using Microsoft.AspNetCore.Mvc;
-using url_shortener.Data.Models;
 using url_shortener.Data.Repositories;
-using url_shortener.Domain;
-using url_shortener.Domain.Interfaces.Repository;
+using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Models;
 using url_shortener.Helpers;
 
 namespace url_shortener.Services;
