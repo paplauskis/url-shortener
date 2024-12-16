@@ -17,6 +17,9 @@ public class UrlEntity : BaseEntity
     [Required]
     public string ShortenedUrl { get; init; }
     
+    [Column("updated_at")]
+    public DateTime UpdatedAt { get; set; }
+    
     [Column("click_count")]
     public int ClickCount { get; set; }
 
@@ -24,6 +27,7 @@ public class UrlEntity : BaseEntity
     {
         OriginalUrl = originalUrl;
         ShortenedUrl = shortenedUrl;
+        UpdatedAt = DateTime.UtcNow;
         ClickCount = clickCount;
     }
     
