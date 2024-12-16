@@ -20,7 +20,7 @@ public class UrlEntityService
         return await _repository.GetAllAsync();
     }
 
-    public async Task<UrlEntity> GetUrlEntityByIdAsync(int id)
+    public async Task<UrlEntity?> GetUrlEntityByIdAsync(int id)
     {
         return await _repository.GetByIdAsync(id);
     }
@@ -85,6 +85,18 @@ public class UrlEntityService
         entity.UpdatedAt = DateTime.UtcNow;
         
         return await _repository.UpdateAsync(entity, urlEntityDto);
+    }
+
+    public async Task DeleteUrlEntityAsync(string id)
+    {
+        if (!int.TryParse(id, out int intId))
+        {
+            throw new InvalidOperationException("Id must be a number.");
+        }
+        
+        var entity = await _repository.GetByIdAsync(intId);
+
+        await _repository.DeleteAsync(entity);
     }
 
     public async Task IncrementClickCount(UrlEntity urlEntity)
