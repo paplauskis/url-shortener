@@ -1,12 +1,12 @@
 namespace url_shortener.Domain.Exceptions;
 
-public class UrlAlreadyExistsException : Exception
+public class LongUrlAlreadyExistsException : Exception
 {
     public string? Url { get; init; }
     
-    public UrlAlreadyExistsException(string message) : base(message) {}
+    public LongUrlAlreadyExistsException(string message) : base(message) {}
     
-    public UrlAlreadyExistsException(string message, string url) 
+    public LongUrlAlreadyExistsException(string message, string url) 
         : base(message)
     {
         Url = url;
