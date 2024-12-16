@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using url_shortener.Data.Context;
+using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Interfaces.Repository;
 using url_shortener.Domain.Models;
@@ -57,19 +58,27 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         return entity;
     }
 
-    public async Task<UrlEntity> UpdateAsync(UrlEntity updatedEntity)
+    public async Task<UrlEntity> UpdateAsync(UrlEntity entityToBeUpdated, UrlEntityDto dto)
     {
-        var existingEntity = await _context.UrlEntities.FindAsync(updatedEntity.Id);
-
-        if (existingEntity != null)
-        {
-            _context.Entry(existingEntity).CurrentValues.SetValues(updatedEntity);
+            _context.Entry(entityToBeUpdated).CurrentValues.SetValues(dto);
             await _context.SaveChangesAsync();
             
-            return updatedEntity;
+            return entityToBeUpdated;
+    }
+    
+    public async Task<UrlEntity> UpdateAsync(UrlEntity entity)
+    {
+        var entityToBeUpdated = await _context.UrlEntities.FindAsync(entity.Id);
+
+        if (entityToBeUpdated != null)
+        {
+            _context.Entry(entityToBeUpdated).CurrentValues.SetValues(entity);
+            await _context.SaveChangesAsync();
+            
+            return entity;
         }
         
-        throw new EntityNotFoundException("Url entity not found", updatedEntity.Id);
+        throw new EntityNotFoundException("Url entity not found", entity.Id);
     }
 
     public async Task DeleteAsync(int id)
