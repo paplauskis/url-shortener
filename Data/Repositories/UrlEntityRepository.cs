@@ -81,15 +81,10 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         throw new EntityNotFoundException("Url entity not found", entity.Id);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(UrlEntity entity)
     {
-        var existingEntity = await _context.UrlEntities.FindAsync(id);
-        
-        if (existingEntity != null)
-        {
-            _context.UrlEntities.Remove(existingEntity);
+            _context.UrlEntities.Remove(entity);
             await _context.SaveChangesAsync();
-        }
     }
     
     public bool CheckIfShortUrlExists(string url)
