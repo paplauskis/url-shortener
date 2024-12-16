@@ -55,14 +55,9 @@ public class UrlAccessLogRepository : IRepository<UrlAccessLog>
         throw new EntityNotFoundException("Url log entity not found", updatedEntity.Id);
     }
 
-    public async Task DeleteAsync(int id)
+    public async Task DeleteAsync(UrlAccessLog entity)
     {
-        var existingEntity = await _context.UrlAccessLogs.FindAsync(id);
-        
-        if (existingEntity != null)
-        {
-            _context.UrlAccessLogs.Remove(existingEntity);
-            await _context.SaveChangesAsync();
-        }
+        _context.UrlAccessLogs.Remove(entity);
+        await _context.SaveChangesAsync();
     }
 }
