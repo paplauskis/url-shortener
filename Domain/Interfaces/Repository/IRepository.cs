@@ -1,4 +1,4 @@
-using url_shortener.Data.Models;
+using url_shortener.Domain.Models;
 
 namespace url_shortener.Domain.Interfaces.Repository;
 
