@@ -1,5 +1,6 @@
 using Microsoft.AspNetCore.Mvc;
-using url_shortener.Domain;
+using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Models;
 using url_shortener.Services;
 
 namespace url_shortener.Controllers;
@@ -14,14 +15,20 @@ public class UrlController : ControllerBase
     {
         _urlEntityService = urlEntityService;
     }
+
+    [HttpGet]
+    public async Task<ActionResult<List<UrlEntity>>> GetUrls()
+    {
+        var entities = await _urlEntityService.GetAllUrlEntitiesAsync();
+        return Ok(entities);
+    }
     
     [HttpPost("/shorten/{url}")]
     public async Task<IActionResult> CreateNewUrl([FromRoute] string url)
     {
         try
         {
-            var newUrl = await _urlEntityService.CreateUrlEntity(url);
-
+            var newUrl = await _urlEntityService.CreateUrlEntityAsync(url);
             return Ok(newUrl);
         }
         catch (UrlAlreadyExistsException uae)
@@ -32,7 +39,5 @@ public class UrlController : ControllerBase
         {
             return BadRequest(ane.Message);
         }
-        
     }
-    
 }
