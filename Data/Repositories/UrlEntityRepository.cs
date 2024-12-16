@@ -1,8 +1,8 @@
 using Microsoft.EntityFrameworkCore;
 using url_shortener.Data.Context;
-using url_shortener.Data.Models;
-using url_shortener.Domain;
+using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Interfaces.Repository;
+using url_shortener.Domain.Models;
 
 namespace url_shortener.Data.Repositories;
 
