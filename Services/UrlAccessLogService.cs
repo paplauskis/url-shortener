@@ -16,18 +16,6 @@ public class UrlAccessLogService
         _lastRequestIp = string.Empty;
     }
 
-    public async Task<List<UrlAccessLog>> GetUrlAccessLogs()
-    {
-        try
-        {
-            return await _repository.GetAllAsync();
-        }
-        catch (ArgumentNullException e)
-        {
-            throw new ArgumentNullException(e.Message);
-        }
-    }
-
     public async Task SaveRequestInfo(string userAgent, string? ip, int urlId, DateTime accessDate)
     {
         var parser = Parser.GetDefault();
