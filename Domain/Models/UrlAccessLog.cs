@@ -13,7 +13,7 @@ public class UrlAccessLog : BaseEntity
     [Column("ip_address")]
     [MaxLength(50)]
     [Required]
-    public string IpAddress { get; init; }
+    public string? IpAddress { get; init; }
     
     [Column("device_type")]
     [MaxLength(20)]
