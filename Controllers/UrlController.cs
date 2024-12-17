@@ -107,8 +107,15 @@ public class UrlController : ControllerBase
     [HttpDelete("{id}")]
     public async Task<IActionResult> DeleteUrlEntity([FromRoute] string id)
     {
-       await _urlEntityService.DeleteUrlEntityAsync(id);
-       return Ok();
+        try
+        {
+            await _urlEntityService.DeleteUrlEntityAsync(id);
+            return Ok();
+        }
+        catch (InvalidOperationException ioe)
+        {
+            return BadRequest(ioe.Message);
+        }
     }
 
     [HttpGet("stats")]
