@@ -26,6 +26,25 @@ public class UrlController : ControllerBase
         return Ok(entities);
     }
 
+    [HttpGet("url/{id}")]
+    public async Task<ActionResult<UrlEntity>> GetUrlDataById([FromRoute] string id)
+    {
+        try
+        {
+            var entity = await _urlEntityService.GetUrlEntityWithAccessLogsByIdAsync(id);
+            return Ok(entity);
+        }
+        catch (Exception e) 
+            when (e is EntityNotFoundException or ArgumentNullException)
+        {
+            return NotFound(e.Message);
+        }
+        catch (InvalidOperationException ioe)
+        {
+            return BadRequest(ioe.Message);
+        }
+    }
+
     [HttpGet("{shortUrl}")]
     public async Task<ActionResult<UrlEntity>> RedirectUrl(string shortUrl)
     {
