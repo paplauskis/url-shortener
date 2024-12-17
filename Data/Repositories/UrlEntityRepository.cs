@@ -21,6 +21,20 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         return await _context.UrlEntities.OrderByDescending(e => e.CreatedAt).ToListAsync();
     }
     
+    public async Task<List<UrlEntity>> GetAllWithAccessLogsAsync()
+    {
+        try
+        {
+            return await _context.UrlEntities
+                .Include(e => e.UrlAccessLogs)
+                .ToListAsync();
+        }
+        catch (ArgumentNullException ane)
+        {
+            throw new ArgumentException(ane.Message);
+        }
+    }
+    
     public async Task<int> CountEntitiesAsync()
     {
         return await _context.UrlEntities.CountAsync();
