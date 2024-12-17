@@ -7,10 +7,13 @@ namespace url_shortener.Services;
 public class UrlAccessLogService
 {
     private readonly UrlAccessLogRepository _repository;
+    private string _lastRequestIp;
+    private DateTime _lastRequestDate;
     
     public UrlAccessLogService(UrlAccessLogRepository urlAccessLogRepository)
     {
         _repository = urlAccessLogRepository;
+        _lastRequestIp = string.Empty;
     }
 
     public async Task SaveRequestInfo(string userAgent, string ip, int urlId, DateTime accessDate)
@@ -26,6 +29,23 @@ public class UrlAccessLogService
             clientInfo.UA.ToString()
         );
         
-        await _repository.AddAsync(entity);
+        if (!IsDuplicateRequest(ip, accessDate))
+        {
+            await _repository.AddAsync(entity);
+        }
+    }
+    
+    //prevents from saving duplicate results to db
+    private bool IsDuplicateRequest(string ip, DateTime accessDate)
+    {
+        if (_lastRequestIp == ip && _lastRequestDate == accessDate)
+        {
+            return true;
+        }
+        
+        _lastRequestIp = ip;
+        _lastRequestDate = accessDate;
+        
+        return false;
     }
 }
