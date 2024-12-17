@@ -91,4 +91,18 @@ public class UrlController : ControllerBase
        await _urlEntityService.DeleteUrlEntityAsync(id);
        return Ok();
     }
+
+    [HttpGet("stats")]
+    public async Task<ActionResult<List<UrlEntity>>> GetUrlAccessLogs()
+    {
+        try
+        {
+            var logs = await _urlAccessLogService.GetUrlAccessLogs();
+            return Ok(logs);
+        }
+        catch (ArgumentNullException ane)
+        {
+            return NotFound(ane.Message);
+        }
+    }
 }
