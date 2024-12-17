@@ -93,11 +93,11 @@ public class UrlController : ControllerBase
     }
 
     [HttpGet("stats")]
-    public async Task<ActionResult<List<UrlEntity>>> GetUrlAccessLogs()
+    public async Task<ActionResult<List<UrlEntity>>> GetUrlEntitiesWithAccessLogs()
     {
         try
         {
-            var logs = await _urlAccessLogService.GetUrlAccessLogs();
+            var logs = await _urlEntityService.GetUrlEntitiesWithAccessLogsAsync();
             return Ok(logs);
         }
         catch (ArgumentNullException ane)
