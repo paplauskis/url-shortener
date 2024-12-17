@@ -38,12 +38,14 @@ public class UrlAccessLogService
     //prevents from saving duplicate results to db
     private bool IsDuplicateRequest(string? ip, DateTime accessDate)
     {
-        if (_lastRequestIp == ip && _lastRequestDate == accessDate)
+        string str = ip ?? string.Empty;
+        
+        if (_lastRequestIp == str && _lastRequestDate == accessDate)
         {
             return true;
         }
         
-        _lastRequestIp = ip ?? string.Empty;
+        _lastRequestIp = str;
         _lastRequestDate = accessDate;
         
         return false;
