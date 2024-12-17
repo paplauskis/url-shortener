@@ -32,6 +32,30 @@ public class UrlEntityService
         }
     }
     
+    public async Task<UrlEntity> GetUrlEntityWithAccessLogsByIdAsync(string id)
+    {
+        if (!int.TryParse(id, out int intId))
+        {
+            throw new InvalidOperationException("Id must be a number.");
+        }
+        
+        try
+        {
+            var entity = await _urlEntityRepository.GetEntityWithAccessLogsByIdAsync(intId);
+            
+            if (entity != null)
+            {
+                return entity;    
+            }
+            
+            throw new EntityNotFoundException("Url wasn't found.", intId);
+        }
+        catch (ArgumentNullException ane)
+        {
+            throw new ArgumentNullException(ane.Message);
+        }
+    }
+    
     public async Task<UrlEntity?> GetUrlEntityByIdAsync(int id)
     {
         return await _urlEntityRepository.GetByIdAsync(id);
