@@ -16,14 +16,14 @@ public class UrlAccessLogService
         _lastRequestIp = string.Empty;
     }
 
-    public async Task SaveRequestInfo(string userAgent, string ip, int urlId, DateTime accessDate)
+    public async Task SaveRequestInfo(string userAgent, string? ip, int urlId, DateTime accessDate)
     {
         var parser = Parser.GetDefault();
         var clientInfo = parser.Parse(userAgent);
 
         var entity = new UrlAccessLog(
             urlId,
-            ip,
+            ip ?? string.Empty,
             clientInfo.Device.Family,
             clientInfo.OS.ToString(),
             clientInfo.UA.ToString()
@@ -36,14 +36,14 @@ public class UrlAccessLogService
     }
     
     //prevents from saving duplicate results to db
-    private bool IsDuplicateRequest(string ip, DateTime accessDate)
+    private bool IsDuplicateRequest(string? ip, DateTime accessDate)
     {
         if (_lastRequestIp == ip && _lastRequestDate == accessDate)
         {
             return true;
         }
         
-        _lastRequestIp = ip;
+        _lastRequestIp = ip ?? string.Empty;
         _lastRequestDate = accessDate;
         
         return false;
