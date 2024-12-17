@@ -1,5 +1,6 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace url_shortener.Domain.Models;
 
@@ -30,6 +31,7 @@ public class UrlAccessLog : BaseEntity
     [Required]
     public string Browser { get; init; }
     
+    [JsonIgnore]
     public virtual UrlEntity UrlEntity { get; init; }
 
     public UrlAccessLog(int urlEntityId, string ipAddress, string device, string operatingSystem, string browser)
