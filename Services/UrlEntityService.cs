@@ -8,28 +8,42 @@ namespace url_shortener.Services;
 
 public class UrlEntityService
 {
-    private readonly UrlEntityRepository _repository;
+    private readonly UrlEntityRepository _urlEntityRepository;
+    private readonly UrlAccessLogRepository _urlAccessLogRepository;
 
-    public UrlEntityService(UrlEntityRepository repository)
+    public UrlEntityService(UrlEntityRepository urlEntityRepository, UrlAccessLogRepository urlAccessLogRepository)
     {
-        _repository = repository;
+        _urlEntityRepository = urlEntityRepository;
+        _urlAccessLogRepository = urlAccessLogRepository;
     }
 
     public async Task<List<UrlEntity>> GetAllUrlEntitiesAsync()
     {
-        return await _repository.GetAllAsync();
+        return await _urlEntityRepository.GetAllAsync();
     }
 
+    public async Task<List<UrlEntity>> GetUrlEntitiesWithAccessLogsAsync()
+    {
+        try
+        {
+            return await _urlEntityRepository.GetAllWithAccessLogsAsync();
+        }
+        catch (ArgumentNullException ane)
+        {
+            throw new ArgumentNullException(ane.Message);
+        }
+    }
+    
     public async Task<UrlEntity?> GetUrlEntityByIdAsync(int id)
     {
-        return await _repository.GetByIdAsync(id);
+        return await _urlEntityRepository.GetByIdAsync(id);
     }
 
     public async Task<UrlEntity> GetUrlEntityByShortUrlAsync(string shortUrl)
     {
         try
         {
-            var entity = await _repository.GetByShortUrlAsync(shortUrl);
+            var entity = await _urlEntityRepository.GetByShortUrlAsync(shortUrl);
             return entity;
         }
         catch (EntityNotFoundException enfe)
@@ -45,22 +59,22 @@ public class UrlEntityService
             throw new ArgumentNullException(nameof(url), "Url cannot be null or empty");
         }
         
-        if (_repository.CheckIfLongUrlExists(url))
+        if (_urlEntityRepository.CheckIfLongUrlExists(url))
         {
             throw new LongUrlAlreadyExistsException("Url already exists", url);
         }
         
-        int totalNumOfEntities = await _repository.CountEntitiesAsync();
+        int totalNumOfEntities = await _urlEntityRepository.CountEntitiesAsync();
         string shortUrl;
         
         do
         {
             shortUrl = ShortUrlGenerator.Generate(totalNumOfEntities);
-        } while (_repository.CheckIfShortUrlExists(shortUrl));
+        } while (_urlEntityRepository.CheckIfShortUrlExists(shortUrl));
         
         var entity = new UrlEntity(url, shortUrl);
         
-        return await _repository.AddAsync(entity);
+        return await _urlEntityRepository.AddAsync(entity);
     }
 
     public async Task<UrlEntity> UpdateUrlEntityAsync(string id, UrlEntityDto urlEntityDto)
@@ -77,14 +91,14 @@ public class UrlEntityService
             throw new EntityNotFoundException("Url entity not found", intId);
         }
 
-        if (urlEntityDto.ShortenedUrl != entity.ShortenedUrl && _repository.CheckIfShortUrlExists(urlEntityDto.ShortenedUrl))
+        if (urlEntityDto.ShortenedUrl != entity.ShortenedUrl && _urlEntityRepository.CheckIfShortUrlExists(urlEntityDto.ShortenedUrl))
         {
             throw new ShortUrlAlreadyExistsException("Url already exists", urlEntityDto.ShortenedUrl);
         }
         
         entity.UpdatedAt = DateTime.UtcNow;
         
-        return await _repository.UpdateAsync(entity, urlEntityDto);
+        return await _urlEntityRepository.UpdateAsync(entity, urlEntityDto);
     }
 
     public async Task DeleteUrlEntityAsync(string id)
@@ -94,14 +108,14 @@ public class UrlEntityService
             throw new InvalidOperationException("Id must be a number.");
         }
         
-        var entity = await _repository.GetByIdAsync(intId);
+        var entity = await _urlEntityRepository.GetByIdAsync(intId);
 
-        await _repository.DeleteAsync(entity);
+        await _urlEntityRepository.DeleteAsync(entity);
     }
 
     public async Task IncrementClickCount(UrlEntity urlEntity)
     {
         urlEntity.ClickCount++;
-        await _repository.UpdateAsync(urlEntity);
+        await _urlEntityRepository.UpdateAsync(urlEntity);
     }
 }
