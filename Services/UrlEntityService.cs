@@ -9,12 +9,10 @@ namespace url_shortener.Services;
 public class UrlEntityService
 {
     private readonly UrlEntityRepository _urlEntityRepository;
-    private readonly UrlAccessLogRepository _urlAccessLogRepository;
 
-    public UrlEntityService(UrlEntityRepository urlEntityRepository, UrlAccessLogRepository urlAccessLogRepository)
+    public UrlEntityService(UrlEntityRepository urlEntityRepository)
     {
         _urlEntityRepository = urlEntityRepository;
-        _urlAccessLogRepository = urlAccessLogRepository;
     }
 
     public async Task<List<UrlEntity>> GetAllUrlEntitiesAsync()
