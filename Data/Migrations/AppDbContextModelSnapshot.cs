@@ -31,13 +31,21 @@ namespace url_shortener.Data.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
-                    b.Property<DateTime>("AccessedAt")
-                        .HasColumnType("timestamp with time zone")
-                        .HasColumnName("accessed_at");
+                    b.Property<string>("Browser")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("browser");
 
                     b.Property<DateTime>("CreatedAt")
                         .HasColumnType("timestamp with time zone")
                         .HasColumnName("created_at");
+
+                    b.Property<string>("Device")
+                        .IsRequired()
+                        .HasMaxLength(20)
+                        .HasColumnType("character varying(20)")
+                        .HasColumnName("device_type");
 
                     b.Property<string>("IpAddress")
                         .IsRequired()
@@ -45,15 +53,15 @@ namespace url_shortener.Data.Migrations
                         .HasColumnType("character varying(50)")
                         .HasColumnName("ip_address");
 
+                    b.Property<string>("OperatingSystem")
+                        .IsRequired()
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
+                        .HasColumnName("operating_system");
+
                     b.Property<int>("UrlEntityId")
                         .HasColumnType("integer")
                         .HasColumnName("url_entity_id");
-
-                    b.Property<string>("UserAgent")
-                        .IsRequired()
-                        .HasMaxLength(300)
-                        .HasColumnType("character varying(300)")
-                        .HasColumnName("user_agent");
 
                     b.HasKey("Id");
 
@@ -87,8 +95,8 @@ namespace url_shortener.Data.Migrations
 
                     b.Property<string>("ShortenedUrl")
                         .IsRequired()
-                        .HasMaxLength(20)
-                        .HasColumnType("character varying(20)")
+                        .HasMaxLength(50)
+                        .HasColumnType("character varying(50)")
                         .HasColumnName("shortened_url");
 
                     b.Property<DateTime>("UpdatedAt")
