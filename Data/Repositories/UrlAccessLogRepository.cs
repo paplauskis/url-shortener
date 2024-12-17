@@ -17,7 +17,14 @@ public class UrlAccessLogRepository : IRepository<UrlAccessLog>
 
     public async Task<List<UrlAccessLog>> GetAllAsync()
     {
-        return await _context.UrlAccessLogs.ToListAsync();
+        try
+        {
+            return await _context.UrlAccessLogs.ToListAsync();
+        }
+        catch (ArgumentNullException ane)
+        {
+            throw new ArgumentNullException(ane.Message);
+        }
     }
 
     public async Task<UrlAccessLog> GetByIdAsync(int id)
