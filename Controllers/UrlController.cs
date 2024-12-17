@@ -11,10 +11,12 @@ namespace url_shortener.Controllers;
 public class UrlController : ControllerBase
 {
     private readonly UrlEntityService _urlEntityService;
+    private readonly UrlAccessLogService _urlAccessLogService;
 
-    public UrlController(UrlEntityService urlEntityService)
+    public UrlController(UrlEntityService urlEntityService, UrlAccessLogService urlAccessLog)
     {
         _urlEntityService = urlEntityService;
+        _urlAccessLogService = urlAccessLog;
     }
 
     [HttpGet]
@@ -30,6 +32,9 @@ public class UrlController : ControllerBase
         try
         {
             var entity = await _urlEntityService.GetUrlEntityByShortUrlAsync(shortUrl);
+            var request = HttpContext.Request.Headers["User-Agent"].ToString();
+            var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
+            await _urlAccessLogService.SaveRequestInfo(request, ip, entity.Id, entity.CreatedAt);
             await _urlEntityService.IncrementClickCount(entity);
             
             return Redirect("https://" + entity.OriginalUrl);
