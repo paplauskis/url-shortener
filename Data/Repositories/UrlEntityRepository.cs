@@ -35,21 +35,14 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         }
     }
     
-    public async Task<UrlEntity> GetEntityWithAccessLogsByIdAsync(int id)
+    public async Task<UrlEntity?> GetEntityWithAccessLogsByIdAsync(int id)
     {
         try
         {
-            var entity = await _context.UrlEntities
+            return await _context.UrlEntities
                 .Where(e => e.Id == id)
                 .Include(e => e.UrlAccessLogs)
                 .FirstOrDefaultAsync();
-            
-            if (entity != null)
-            {
-                return entity;    
-            }
-            
-            throw new EntityNotFoundException("Url wasn't found.", id);
         }
         catch (ArgumentNullException ane)
         {
