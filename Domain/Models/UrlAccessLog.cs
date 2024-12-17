@@ -10,27 +10,34 @@ public class UrlAccessLog : BaseEntity
     [Required]
     public int UrlEntityId { get; init; }
     
-    [Column("accessed_at")]
-    [Required]
-    public DateTime AccessedAt { get; init; }
-    
     [Column("ip_address")]
     [MaxLength(50)]
     [Required]
     public string IpAddress { get; init; }
     
-    [Column("user_agent")]
-    [MaxLength(300)]
+    [Column("device_type")]
+    [MaxLength(20)]
     [Required]
-    public string UserAgent { get; init; }
+    public string Device { get; init; }
+    
+    [Column("operating_system")]
+    [MaxLength(50)]
+    [Required]
+    public string OperatingSystem { get; init; }
+    
+    [Column("browser")]
+    [MaxLength(50)]
+    [Required]
+    public string Browser { get; init; }
     
     public virtual UrlEntity UrlEntity { get; init; }
 
-    public UrlAccessLog(int urlEntityId, DateTime accessedAt, string ipAddress, string userAgent)
+    public UrlAccessLog(int urlEntityId, string ipAddress, string device, string operatingSystem, string browser)
     {
         UrlEntityId = urlEntityId;
-        AccessedAt = accessedAt;
         IpAddress = ipAddress;
-        UserAgent = userAgent;
+        Device = device;
+        OperatingSystem = operatingSystem;
+        Browser = browser;
     }
 }
