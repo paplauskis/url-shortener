@@ -104,7 +104,7 @@ public class UrlController : ControllerBase
         }
     }
 
-    [HttpDelete("{id}")]
+    [HttpDelete("url/{id}")]
     public async Task<IActionResult> DeleteUrlEntity([FromRoute] string id)
     {
         try
