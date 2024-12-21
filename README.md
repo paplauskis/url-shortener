@@ -2,7 +2,7 @@
 
 ## Overview
 
-The URL Shortener API is a backend service for generating short URLs, managing URL data, and tracking access logs. Built with ASP.NET Core, this API supports URL redirection, click tracking, and detailed statistics for URL usage.
+The URL Shortener API is a backend service for generating short URLs, managing URL data, and tracking access logs. API supports URL redirection, click tracking, and detailed statistics for URL usage.
 
 ## Features
 
