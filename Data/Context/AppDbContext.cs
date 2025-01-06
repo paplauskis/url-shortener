@@ -11,4 +11,5 @@ public class AppDbContext : DbContext
     
     public DbSet<UrlEntity> UrlEntities { get; set; }
     public DbSet<UrlAccessLog> UrlAccessLogs { get; set; }
+    public DbSet<User> Users { get; set; }
 }
