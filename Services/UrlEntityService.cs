@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using url_shortener.Data.Repositories;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
@@ -9,10 +10,12 @@ namespace url_shortener.Services;
 public class UrlEntityService
 {
     private readonly UrlEntityRepository _urlEntityRepository;
+    private readonly UserService _userService;
 
-    public UrlEntityService(UrlEntityRepository urlEntityRepository)
+    public UrlEntityService(UrlEntityRepository urlEntityRepository, UserService userService)
     {
         _urlEntityRepository = urlEntityRepository;
+        _userService = userService;
     }
 
     public async Task<List<UrlEntity>> GetAllUrlEntitiesAsync()
@@ -74,7 +77,7 @@ public class UrlEntityService
         }
     }
     
-    public async Task<UrlEntity> CreateUrlEntityAsync(string url)
+    public async Task<UrlEntity> CreateUrlEntityAsync(string url, string token)
     {
         if (string.IsNullOrEmpty(url))
         {
@@ -85,6 +88,12 @@ public class UrlEntityService
         {
             throw new LongUrlAlreadyExistsException("Url already exists", url);
         }
+
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+        var userEmailClaim = jsonToken?.Claims.FirstOrDefault(c => 
+            string.Equals(c.Type, "email", StringComparison.OrdinalIgnoreCase))?.Value;
+        var user = await _userService.GetByEmailAsync(userEmailClaim);
         
         int totalNumOfEntities = await _urlEntityRepository.CountEntitiesAsync();
         string shortUrl;
@@ -94,7 +103,7 @@ public class UrlEntityService
             shortUrl = ShortUrlGenerator.Generate(totalNumOfEntities);
         } while (_urlEntityRepository.CheckIfShortUrlExists(shortUrl));
         
-        var entity = new UrlEntity(url, shortUrl);
+        var entity = new UrlEntity(url, shortUrl, user.Id);
         
         return await _urlEntityRepository.AddAsync(entity);
     }
