@@ -9,18 +9,27 @@ namespace url_shortener.Controllers;
 
 [ApiController]
 [AllowAnonymous]
-[Route("/api/user")]
+[Route("/api/[controller]/")]
 public class UserController : ControllerBase
 {
-    private readonly AppDbContext _context;
     private readonly UserService _userService;
 
-    public UserController(AppDbContext context, UserService userService)
+    public UserController(UserService userService)
     {
-        _context = context;
         _userService = userService;
     }
 
-    
+    [HttpPost("login")]
+    public async Task<IActionResult> Login([FromBody] LoginUserRequestDto userRequestDto)
+    {
+        try
+        {
+            var response = await _userService.HandleUserLogin(userRequestDto);
+            return Ok(response);
+        }
+        catch (UnauthorizedAccessException uae)
+        {
+            return Unauthorized("unauthorized access");
+        }
     }
 }
