@@ -71,7 +71,9 @@ public class UrlController : ControllerBase
     {
         try
         {
-            var newUrl = await _urlEntityService.CreateUrlEntityAsync(url);
+            var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+            
+            var newUrl = await _urlEntityService.CreateUrlEntityAsync(url, token);
             return Ok(newUrl);
         }
         catch (LongUrlAlreadyExistsException uae)
