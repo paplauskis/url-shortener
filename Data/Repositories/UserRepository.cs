@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using url_shortener.Data.Context;
 using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Interfaces.Repository;
@@ -28,7 +29,7 @@ public class UserRepository : IRepository<User>
     
     public async Task<User?> GetByEmailAsync(string email)
     {
-        return await _context.Users.FindAsync(email);
+        return await _context.Users.FirstOrDefaultAsync(u => u.Email == email);
     }
 
     public async Task<User> AddAsync(User entity)
