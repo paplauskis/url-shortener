@@ -28,10 +28,11 @@ public class UrlEntity : BaseEntity
     [Column("click_count")]
     public int ClickCount { get; set; }
 
-    public UrlEntity(string originalUrl, string shortenedUrl, int clickCount = 0)
+    public UrlEntity(string originalUrl, string shortenedUrl, int userId, int clickCount = 0)
     {
         OriginalUrl = originalUrl;
         ShortenedUrl = shortenedUrl;
+        UserId = userId;
         UpdatedAt = DateTime.UtcNow;
         ClickCount = clickCount;
     }
