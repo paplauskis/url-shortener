@@ -1,11 +1,16 @@
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using System.Text.Json.Serialization;
 
 namespace url_shortener.Domain.Models;
 
 [Table("url_entity")]
 public class UrlEntity : BaseEntity
 {
+    [Column("user_id")]
+    [Required]
+    public int UserId { get; init; }
+    
     [Column("original_url")]
     [Required]
     [MinLength(4)]
@@ -32,4 +37,7 @@ public class UrlEntity : BaseEntity
     }
     
     public virtual List<UrlAccessLog> UrlAccessLogs { get; set; } = new List<UrlAccessLog>();
+    
+    [JsonIgnore]
+    public virtual User User { get; init; }
 }
