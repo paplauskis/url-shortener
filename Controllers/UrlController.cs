@@ -1,3 +1,4 @@
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
@@ -7,6 +8,7 @@ using url_shortener.Services;
 namespace url_shortener.Controllers;
 
 [ApiController]
+[Authorize]
 [Route("/api/")]
 public class UrlController : ControllerBase
 {
