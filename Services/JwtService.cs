@@ -21,7 +21,8 @@ public class JwtService
     public async Task<LoginUserResponseDto?> Authenticate(LoginUserRequestDto requestDto)
     {
         var userAccount = await _userRepository.GetByEmailAsync(requestDto.Email);
-        if (userAccount is null)
+        
+        if (userAccount is null || userAccount.Password != requestDto.Password)
         {
             return null;
         }
