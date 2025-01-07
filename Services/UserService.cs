@@ -1,3 +1,4 @@
+using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
@@ -60,5 +61,22 @@ public class UserService
     public async Task<User> AddAsync(User user)
     {
         return await _userRepository.AddAsync(user);
+    }
+
+    public async Task<User> ValidateUserAsync(string token)
+    {
+        var handler = new JwtSecurityTokenHandler();
+        var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
+        var userEmailClaim = jsonToken?.Claims.FirstOrDefault(c => 
+            string.Equals(c.Type, "email", StringComparison.OrdinalIgnoreCase))?.Value;
+
+        if (userEmailClaim is null)
+        {
+            throw new UnauthorizedAccessException();
+        }
+        
+        var user = await GetByEmailAsync(userEmailClaim);
+        
+        return user;
     }
 }
