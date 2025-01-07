@@ -126,6 +126,18 @@ Responses:
 
 - 404 Not Found: No logs available.
 
+### 8. Login
+
+**GET /api/user/login**
+
+Logs in user if credentials are correct.
+
+Responses:
+
+- 200 OK: List of URL entities with logs.
+
+- 401 Unauthorized: No logs available.
+
 ## Tech Stack
 
 - Framework: ASP.NET Core
