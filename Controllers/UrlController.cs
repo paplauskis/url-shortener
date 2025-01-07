@@ -24,7 +24,8 @@ public class UrlController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<List<UrlEntity>>> GetUrls()
     {
-        var entities = await _urlEntityService.GetAllUrlEntitiesAsync();
+        var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
+        var entities = await _urlEntityService.GetAllUrlEntitiesAsync(token);
         return Ok(entities);
     }
 
@@ -48,6 +49,7 @@ public class UrlController : ControllerBase
     }
 
     [HttpGet("{shortUrl}")]
+    [AllowAnonymous]
     public async Task<ActionResult<UrlEntity>> RedirectUrl(string shortUrl)
     {
         try
@@ -56,9 +58,10 @@ public class UrlController : ControllerBase
             var request = HttpContext.Request.Headers["User-Agent"].ToString();
             var ip = HttpContext.Connection.RemoteIpAddress?.ToString();
             await _urlAccessLogService.SaveRequestInfo(request, ip, entity.Id, entity.CreatedAt);
+            
             await _urlEntityService.IncrementClickCount(entity);
             
-            return Redirect("https://" + entity.OriginalUrl);
+            return Redirect(entity.OriginalUrl);
         }
         catch (EntityNotFoundException enfe)
         {
