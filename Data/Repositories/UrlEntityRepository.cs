@@ -16,9 +16,12 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         _context = context;
     }
 
-    public async Task<List<UrlEntity>> GetAllAsync()
+    public async Task<List<UrlEntity>> GetAllAsync(int userId)
     {
-        return await _context.UrlEntities.OrderByDescending(e => e.CreatedAt).ToListAsync();
+        return await _context.UrlEntities
+            .Where(x => x.UserId == userId)
+            .OrderByDescending(e => e.CreatedAt)
+            .ToListAsync();
     }
     
     public async Task<List<UrlEntity>> GetAllWithAccessLogsAsync()
