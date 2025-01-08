@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using url_shortener.Data.Context;
 using url_shortener.Domain.DTOs;
+using url_shortener.Domain.Exceptions;
 using url_shortener.Services;
 
 namespace url_shortener.Controllers;
@@ -30,6 +31,24 @@ public class UserController : ControllerBase
         catch (UnauthorizedAccessException uae)
         {
             return Unauthorized("unauthorized access");
+        }
+    }
+    
+    [HttpPost("register")]
+    public async Task<IActionResult> Register([FromBody] LoginUserRequestDto userRequestDto)
+    {
+        try
+        {
+            var response = await _userService.HandleUserRegistration(userRequestDto);
+            return Ok(response);
+        }
+        catch (UserAlreadyExistsException e)
+        {
+            return BadRequest(e.Message + ": " + e.Email);
+        }
+        catch (ArgumentException e)
+        {
+            return BadRequest(e.Message + ": " + e.ParamName);
         }
     }
 }
