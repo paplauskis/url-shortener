@@ -1,7 +1,4 @@
 using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
-using Microsoft.AspNetCore.Authentication;
-using Microsoft.AspNetCore.Authentication.Cookies;
 using url_shortener.Data.Repositories;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
@@ -45,7 +42,22 @@ public class UserService
         return result;
     }
 
-    public void ValidateUserInput(LoginUserRequestDto userRequestDto)
+    public async Task<LoginUserResponseDto> HandleUserRegistration(LoginUserRequestDto userRequestDto)
+    {
+        var existingUser = await _userRepository.GetByEmailAsync(userRequestDto.Email);
+
+        if (existingUser != null)
+        {
+            throw new UserAlreadyExistsException("User with this email already exists", existingUser.Email);
+        }
+        
+        ValidateUserInput(userRequestDto);
+        await AddAsync(new User { Email = userRequestDto.Email, Password = userRequestDto.Password });
+
+        return await HandleUserLogin(userRequestDto);
+    } 
+
+    private static void ValidateUserInput(LoginUserRequestDto userRequestDto)
     {
         if (!userRequestDto.Email.IsEmailValid())
         {
