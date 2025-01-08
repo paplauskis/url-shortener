@@ -7,18 +7,13 @@ using url_shortener.Domain.Models;
 
 namespace url_shortener.Data.Repositories;
 
-public class UrlEntityRepository : IRepository<UrlEntity>
+public class UrlEntityRepository : BaseRepository<UrlEntity>
 {
-    private readonly AppDbContext _context;
-    
-    public UrlEntityRepository(AppDbContext context)
-    {
-        _context = context;
-    }
+    public UrlEntityRepository(AppDbContext context) : base(context) {}
 
     public async Task<List<UrlEntity>> GetAllAsync(int userId)
     {
-        return await _context.UrlEntities
+        return await Context.UrlEntities
             .Where(x => x.UserId == userId)
             .OrderByDescending(e => e.CreatedAt)
             .ToListAsync();
@@ -28,7 +23,7 @@ public class UrlEntityRepository : IRepository<UrlEntity>
     {
         try
         {
-            return await _context.UrlEntities
+            return await Context.UrlEntities
                 .Include(e => e.UrlAccessLogs)
                 .ToListAsync();
         }
@@ -42,7 +37,7 @@ public class UrlEntityRepository : IRepository<UrlEntity>
     {
         try
         {
-            return await _context.UrlEntities
+            return await Context.UrlEntities
                 .Where(e => e.Id == id)
                 .Include(e => e.UrlAccessLogs)
                 .FirstOrDefaultAsync();
@@ -55,24 +50,12 @@ public class UrlEntityRepository : IRepository<UrlEntity>
     
     public async Task<int> CountEntitiesAsync()
     {
-        return await _context.UrlEntities.CountAsync();
-    }
-
-    public async Task<UrlEntity> GetByIdAsync(int id)
-    {
-        var entity = await _context.UrlEntities.FindAsync(id);
-
-        if (entity != null)
-        {
-            return entity;
-        }
-        
-        throw new EntityNotFoundException("Entity could not be found", id);
+        return await Context.UrlEntities.CountAsync();
     }
     
     public async Task<UrlEntity> GetByShortUrlAsync(string url)
     {
-        var entity = await _context.UrlEntities.FirstOrDefaultAsync(e => e.ShortenedUrl == url);
+        var entity = await Context.UrlEntities.FirstOrDefaultAsync(e => e.ShortenedUrl == url);
 
         if (entity != null)
         {
@@ -82,52 +65,23 @@ public class UrlEntityRepository : IRepository<UrlEntity>
         throw new EntityNotFoundException("Entity could not be found");
     }
 
-    public async Task<UrlEntity> AddAsync(UrlEntity entity)
-    {
-        await _context.UrlEntities.AddAsync(entity);
-        await _context.SaveChangesAsync();
-        
-        return entity;
-    }
-
     public async Task<UrlEntity> UpdateAsync(UrlEntity entityToBeUpdated, UrlEntityDto dto)
     {
-            _context.Entry(entityToBeUpdated).CurrentValues.SetValues(dto);
-            await _context.SaveChangesAsync();
+            Context.Entry(entityToBeUpdated).CurrentValues.SetValues(dto);
+            await Context.SaveChangesAsync();
             
             return entityToBeUpdated;
     }
     
-    public async Task<UrlEntity> UpdateAsync(UrlEntity entity)
-    {
-        var entityToBeUpdated = await _context.UrlEntities.FindAsync(entity.Id);
-
-        if (entityToBeUpdated != null)
-        {
-            _context.Entry(entityToBeUpdated).CurrentValues.SetValues(entity);
-            await _context.SaveChangesAsync();
-            
-            return entity;
-        }
-        
-        throw new EntityNotFoundException("Url entity not found", entity.Id);
-    }
-
-    public async Task DeleteAsync(UrlEntity entity)
-    {
-            _context.UrlEntities.Remove(entity);
-            await _context.SaveChangesAsync();
-    }
-    
     public bool CheckIfShortUrlExists(string url)
     {
-        return _context.UrlEntities
+        return Context.UrlEntities
             .Any(e => e.ShortenedUrl == url);
     }
     
     public bool CheckIfLongUrlExists(string url)
     {
-        return _context.UrlEntities
+        return Context.UrlEntities
             .Any(e => e.OriginalUrl == url);
     }
 }
