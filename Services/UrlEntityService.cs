@@ -2,12 +2,13 @@ using System.Web;
 using url_shortener.Data.Repositories;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Domain.Models;
 using url_shortener.Helpers;
 
 namespace url_shortener.Services;
 
-public class UrlEntityService
+public class UrlEntityService : IUrlEntityService
 {
     private readonly UrlEntityRepository _urlEntityRepository;
     private readonly UserService _userService;
@@ -18,14 +19,14 @@ public class UrlEntityService
         _userService = userService;
     }
 
-    public async Task<List<UrlEntity>> GetAllUrlEntitiesAsync(string token)
+    public async Task<List<UrlEntity>> GetAllAsync(string token)
     {
-        var user = await _userService.ValidateUserAsync(token);
+        var user = await _userService.ValidateUserTokenAsync(token);
         
         return await _urlEntityRepository.GetAllAsync(user.Id);
     }
 
-    public async Task<List<UrlEntity>> GetUrlEntitiesWithAccessLogsAsync()
+    public async Task<List<UrlEntity>> GetAllWithAccessLogsAsync()
     {
         try
         {
@@ -91,7 +92,7 @@ public class UrlEntityService
             throw new LongUrlAlreadyExistsException("Url already exists", url);
         }
 
-        var user = await _userService.ValidateUserAsync(token);
+        var user = await _userService.ValidateUserTokenAsync(token);
         
         int totalNumOfEntities = await _urlEntityRepository.CountEntitiesAsync();
         string shortUrl;
