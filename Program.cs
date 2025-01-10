@@ -5,6 +5,7 @@ using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
 using url_shortener.Data.Context;
 using url_shortener.Data.Repositories;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Services;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,10 +13,10 @@ var builder = WebApplication.CreateBuilder(args);
 // Add services to the container.
 builder.Services.AddScoped<UrlEntityRepository>();
 builder.Services.AddScoped<UrlAccessLogRepository>();
-builder.Services.AddScoped<UrlEntityService>();
-builder.Services.AddScoped<UrlAccessLogService>();
+builder.Services.AddScoped<IUrlEntityService, UrlEntityService>();
+builder.Services.AddScoped<IUrlAccessLogService, UrlAccessLogService>();
 builder.Services.AddScoped<UserRepository>();
-builder.Services.AddScoped<UserService>();
+builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
