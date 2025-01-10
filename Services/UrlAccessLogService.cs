@@ -1,10 +1,11 @@
 using url_shortener.Data.Repositories;
 using UAParser;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Domain.Models;
 
 namespace url_shortener.Services;
 
-public class UrlAccessLogService
+public class UrlAccessLogService : IUrlAccessLogService
 {
     private readonly UrlAccessLogRepository _repository;
     private string _lastRequestIp;
