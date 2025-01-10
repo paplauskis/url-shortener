@@ -1,7 +1,5 @@
-using Microsoft.IdentityModel.Tokens;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Interfaces.Repository;
-using url_shortener.Domain.Models;
 
 namespace url_shortener.Services;
 
