@@ -1,9 +1,8 @@
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using url_shortener.Data.Context;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Services;
 
 namespace url_shortener.Controllers;
@@ -13,7 +12,7 @@ namespace url_shortener.Controllers;
 [Route("/api/[controller]/")]
 public class UserController : ControllerBase
 {
-    private readonly UserService _userService;
+    private readonly IUserService _userService;
 
     public UserController(UserService userService)
     {

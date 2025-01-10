@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Domain.Models;
 using url_shortener.Services;
 
@@ -12,8 +13,8 @@ namespace url_shortener.Controllers;
 [Route("/api/")]
 public class UrlController : ControllerBase
 {
-    private readonly UrlEntityService _urlEntityService;
-    private readonly UrlAccessLogService _urlAccessLogService;
+    private readonly IUrlEntityService _urlEntityService;
+    private readonly IUrlAccessLogService _urlAccessLogService;
 
     public UrlController(UrlEntityService urlEntityService, UrlAccessLogService urlAccessLog)
     {
@@ -25,7 +26,7 @@ public class UrlController : ControllerBase
     public async Task<ActionResult<List<UrlEntity>>> GetUrls()
     {
         var token = Request.Headers["Authorization"].ToString().Replace("Bearer ", "");
-        var entities = await _urlEntityService.GetAllUrlEntitiesAsync(token);
+        var entities = await _urlEntityService.GetAllAsync(token);
         return Ok(entities);
     }
 
@@ -130,7 +131,7 @@ public class UrlController : ControllerBase
     {
         try
         {
-            var logs = await _urlEntityService.GetUrlEntitiesWithAccessLogsAsync();
+            var logs = await _urlEntityService.GetAllWithAccessLogsAsync();
             return Ok(logs);
         }
         catch (ArgumentNullException ane)
