@@ -2,6 +2,7 @@ using System.IdentityModel.Tokens.Jwt;
 using url_shortener.Data.Repositories;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
+using url_shortener.Domain.Interfaces.Repository;
 using url_shortener.Domain.Models;
 using url_shortener.Helpers;
 
@@ -51,23 +52,17 @@ public class UserService
             throw new UserAlreadyExistsException("User with this email already exists", existingUser.Email);
         }
         
-        ValidateUserInput(userRequestDto);
+        var validators = new List<IValidator<LoginUserRequestDto>> { new EmailValidator(), new PasswordValidator() };
+        var validationService = new UserValidationService(validators);
+        
+        if (!validationService.Validate(userRequestDto))
+        {
+            throw new ArgumentException("Email or password is invalid");
+        }
+        
         await AddAsync(new User { Email = userRequestDto.Email, Password = userRequestDto.Password });
 
         return await HandleUserLogin(userRequestDto);
-    } 
-
-    private static void ValidateUserInput(LoginUserRequestDto userRequestDto)
-    {
-        if (!userRequestDto.Email.IsEmailValid())
-        {
-            throw new ArgumentException("Invalid email", userRequestDto.Email);
-        }
-
-        if (!userRequestDto.Password.IsPasswordValid())
-        {
-            throw new ArgumentException("Invalid password", userRequestDto.Password);
-        }
     }
 
     public async Task<User> AddAsync(User user)
