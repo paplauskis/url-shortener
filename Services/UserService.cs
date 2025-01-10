@@ -3,12 +3,13 @@ using url_shortener.Data.Repositories;
 using url_shortener.Domain.DTOs;
 using url_shortener.Domain.Exceptions;
 using url_shortener.Domain.Interfaces.Repository;
+using url_shortener.Domain.Interfaces.Service;
 using url_shortener.Domain.Models;
 using url_shortener.Helpers;
 
 namespace url_shortener.Services;
 
-public class UserService
+public class UserService : IUserService
 {
     private readonly UserRepository _userRepository;
     private readonly JwtService _jwtService;
@@ -70,7 +71,7 @@ public class UserService
         return await _userRepository.AddAsync(user);
     }
 
-    public async Task<User> ValidateUserAsync(string token)
+    public async Task<User> ValidateUserTokenAsync(string token)
     {
         var handler = new JwtSecurityTokenHandler();
         var jsonToken = handler.ReadToken(token) as JwtSecurityToken;
