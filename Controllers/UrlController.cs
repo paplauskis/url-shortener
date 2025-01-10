@@ -16,7 +16,7 @@ public class UrlController : ControllerBase
     private readonly IUrlEntityService _urlEntityService;
     private readonly IUrlAccessLogService _urlAccessLogService;
 
-    public UrlController(UrlEntityService urlEntityService, UrlAccessLogService urlAccessLog)
+    public UrlController(IUrlEntityService urlEntityService, IUrlAccessLogService urlAccessLog)
     {
         _urlEntityService = urlEntityService;
         _urlAccessLogService = urlAccessLog;
