@@ -14,9 +14,12 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddScoped<UrlEntityRepository>();
 builder.Services.AddScoped<UrlAccessLogRepository>();
 builder.Services.AddScoped<IUrlEntityService, UrlEntityService>();
+builder.Services.AddScoped<UrlEntityService>();
 builder.Services.AddScoped<IUrlAccessLogService, UrlAccessLogService>();
+builder.Services.AddScoped<UrlAccessLogService>();
 builder.Services.AddScoped<UserRepository>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<UserService>();
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddControllers();
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
